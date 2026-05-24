@@ -1,31 +1,26 @@
 package com.barbulescu.codedojo.exercise0001
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.MethodSource
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DynamicTest.dynamicTest
+import org.junit.jupiter.api.TestFactory
 
 class Exercise0001Test {
 
-    companion object {
-        @JvmStatic
-        fun implementations() = listOf(ExerciseJava0001(), ExerciseKotlin0001())
-    }
+    private val implementations = listOf(ExerciseJava0001(), ExerciseKotlin0001())
 
-    @ParameterizedTest
-    @MethodSource("implementations")
-    fun filterEven(exercise: Exercise0001) {
-        assertEquals(listOf(2, 4, 6), exercise.filterEven(listOf(1, 2, 3, 4, 5, 6)))
-    }
-
-    @ParameterizedTest
-    @MethodSource("implementations")
-    fun toUpperCase(exercise: Exercise0001) {
-        assertEquals(listOf("HELLO", "WORLD"), exercise.toUpperCase(listOf("hello", "world")))
-    }
-
-    @ParameterizedTest
-    @MethodSource("implementations")
-    fun sumPositive(exercise: Exercise0001) {
-        assertEquals(6, exercise.sumPositive(listOf(-3, 1, -1, 2, 3)))
+    @TestFactory
+    fun exercise0001() = implementations.flatMap { exercise ->
+        listOf(
+            dynamicTest("${exercise::class.simpleName} processWords") {
+                val actual = exercise.processWords(listOf("hello", null, "world"))
+                val expected = listOf("HELLO", "WORLD")
+                assertThat(actual).isEqualTo(expected)
+            },
+            dynamicTest("${exercise::class.simpleName} countWords") {
+                val actual = exercise.countWords(listOf("a", "b", "c", "a", "c"))
+                val expected = mapOf("a" to 2, "b" to 1, "c" to 2)
+                assertThat(actual).isEqualTo(expected)
+            }
+        )
     }
 }

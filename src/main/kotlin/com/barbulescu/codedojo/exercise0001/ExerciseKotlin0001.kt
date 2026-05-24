@@ -2,31 +2,25 @@ package com.barbulescu.codedojo.exercise0001
 
 class ExerciseKotlin0001 : Exercise0001 {
 
-    override fun filterEven(numbers: List<Int>): List<Int> {
-        val result = mutableListOf<Int>()
-        for (n in numbers) {
-            if (n % 2 == 0) {
-                result.add(n)
-            }
-        }
-        return result
-    }
-
-    override fun toUpperCase(words: List<String>): List<String> {
+    override fun processWords(words: List<String?>): List<String> {
         val result = mutableListOf<String>()
-        for (word in words) {
+        for (i in 0 until words.size) {
+            val word = words[i]
+            if (word == null) continue
             result.add(word.uppercase())
         }
         return result
     }
 
-    override fun sumPositive(numbers: List<Int>): Int {
-        var sum = 0
-        for (n in numbers) {
-            if (n > 0) {
-                sum += n
+    override fun countWords(words: List<String>): Map<String, Int> {
+        val result = mutableMapOf<String, Int>()
+        for (word in words) {
+            if (result.containsKey(word)) {
+                result.put(word, result.get(word)!! + 1)
+            } else {
+                result.put(word, 1)
             }
         }
-        return sum
+        return result
     }
 }

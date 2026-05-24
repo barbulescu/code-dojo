@@ -10,13 +10,13 @@ repositories {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }
 
 dependencies {
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.params)
+    testImplementation(libs.assertj)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
