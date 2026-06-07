@@ -5,13 +5,13 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/../abc/src/main" />
-        <option name="gradleJvm" value="25" />
+        <option name="gradleJvm" value="temurin-25" />
       </GradleProjectSettings>
       <GradleProjectSettings>
         <option name="delegatedBuild" value="false" />
         <option name="testRunner" value="PLATFORM" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="25" />
+        <option name="gradleJvm" value="temurin-25" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -20,7 +20,7 @@
       </GradleProjectSettings>
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/src/main/java" />
-        <option name="gradleJvm" value="25" />
+        <option name="gradleJvm" value="temurin-25" />
       </GradleProjectSettings>
     </option>
   </component>

@@ -1,4 +1,4 @@
-# Compiled class file
+¡# Compiled class file
 *.class
 
 # Log file
@@ -31,3 +31,4 @@ replay_pid*
 
 # Ignore Gradle build output directory
 build
+/out
