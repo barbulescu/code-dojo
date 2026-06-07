@@ -9,7 +9,8 @@ public class ExerciseJava0001 implements Exercise0001 {
 
     @Override
     public List<String> processWords(List<String> words) {
-        List<String> result = new ArrayList<>();
+        List<String> result = null;
+        result = new ArrayList<>();
         for (int i = 0; i < words.size(); i++) {
             String word = words.get(i);
             if (word != null) {
@@ -21,7 +22,8 @@ public class ExerciseJava0001 implements Exercise0001 {
 
     @Override
     public Map<String, Integer> countWords(List<String> words) {
-        Map<String, Integer> result = new HashMap<>();
+        Map<String, Integer> result = null;
+        result = new HashMap<>();
         for (int i = 0; i < words.size(); i++) {
             String word = words.get(i);
             if (result.containsKey(word)) {
@@ -35,8 +37,11 @@ public class ExerciseJava0001 implements Exercise0001 {
 
     @Override
     public kotlin.Pair<List<Integer>, List<Integer>> splitByParity(List<Integer> numbers) {
-        List<Integer> evens = new ArrayList<>();
-        List<Integer> odds = new ArrayList<>();
+        List<Integer> evens;
+        List<Integer> odds;
+
+        evens = new ArrayList<>();
+        odds = new ArrayList<>();
         for (int i = 0; i < numbers.size(); i++) {
             Integer number = numbers.get(i);
             if (number % 2 == 0) {
