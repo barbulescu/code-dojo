@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 
 @RestController
 class HelloWorldKotlinWebClientController(@Value("\${translation.service.url}") baseUrl: String) {
@@ -12,10 +13,10 @@ class HelloWorldKotlinWebClientController(@Value("\${translation.service.url}") 
     private val client = WebClient.create(baseUrl)
 
     @GetMapping("/kotlin/webclient/hello")
-    fun hello(@RequestParam("lang") lang: String): String =
-        client.get()
-            .uri("/translate?lang=$lang")
-            .retrieve()
-            .bodyToMono(String::class.java)
-            .block()!!
+    fun hello(@RequestParam("lang") lang: String): String = client.get()
+        .uri("/translate?lang=$lang")
+        .retrieve()
+        .bodyToMono<String>()
+        .block()
+        ?: "no translation available"
 }

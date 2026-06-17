@@ -13,9 +13,9 @@ class HelloWorldKotlinRestClientController(@Value("\${translation.service.url}")
     private val client = RestClient.create(baseUrl)
 
     @GetMapping("/kotlin/restclient/hello")
-    fun hello(@RequestParam("lang") lang: String): String =
-        client.get()
-            .uri("/translate?lang=$lang")
-            .retrieve()
-            .body<String>() ?: "no translation available"
+    fun hello(@RequestParam("lang") lang: String): String = client.get()
+        .uri("/translate?lang=$lang")
+        .retrieve()
+        .body<String>()
+        ?: "no translation available"
 }

@@ -28,7 +28,13 @@ class Exercise0002Test(private val client: RestTestClient, private val wm: WireM
         "/java/webclient/hello",
         "/kotlin/resttemplate/hello",
         "/kotlin/restclient/hello",
-        "/kotlin/webclient/hello"
+        "/kotlin/webclient/hello",
+        "/java/declarative/resttemplate/hello",
+        "/java/declarative/restclient/hello",
+        "/java/declarative/webclient/hello",
+        "/kotlin/declarative/resttemplate/hello",
+        "/kotlin/declarative/restclient/hello",
+        "/kotlin/declarative/webclient/hello"
     ).flatMap { url ->
         listOf(
             dynamicTest("$url translate to Spanish") {
