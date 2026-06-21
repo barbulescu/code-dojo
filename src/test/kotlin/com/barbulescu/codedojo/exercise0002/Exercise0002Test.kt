@@ -8,10 +8,10 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest
 import kotlinx.coroutines.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
+import org.springframework.boot.restclient.RestTemplateBuilder
 import org.springframework.stereotype.Component
 import org.springframework.web.client.ResourceAccessException
 import kotlin.test.assertFailsWith
@@ -21,6 +21,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class Exercise0002Test(
     kotlinImplementation: Lesson0002KotlinService,
     javaImplementation: Lesson0002JavaService,
+    private val restTemplateBuilder: RestTemplateBuilder,
 ) {
 
     private val implementations: List<Lesson0002Service> = listOf(kotlinImplementation, javaImplementation)
@@ -33,25 +34,21 @@ class Exercise0002Test(
         }
     }
 
-    @Disabled("fix RestTemplate configuration")
     @TestFactory
     fun `test whether read timeout is configured`() = implementations.map { impl ->
         dynamicTest("${impl::class.simpleName} - slow downstream reveals missing timeout") {
             assertThatThrownBy { impl.translate("long-delay", "es") }
                 .isInstanceOf(ResourceAccessException::class.java)
-                .hasMessageContaining("Request cancelled")
         }
     }
 
-
-    @Disabled("fix RestTemplate configuration")
     @TestFactory
     fun `test whether connect timeout is configured`(): List<DynamicTest> {
         // 10.255.255.1 is a non-routable address that drops TCP SYN packets, triggering connect timeout
         val blackHoleProperties = TranslationProperties("http://10.255.255.1")
         val timeoutImplementations = listOf(
-            Lesson0002KotlinService(blackHoleProperties),
-            Lesson0002JavaService(blackHoleProperties),
+            Lesson0002KotlinService(blackHoleProperties, restTemplateBuilder),
+            Lesson0002JavaService(blackHoleProperties, restTemplateBuilder),
         )
         return timeoutImplementations.map { impl ->
             dynamicTest("${impl::class.simpleName} - connect timeout fires within 1 second") {
@@ -63,11 +60,10 @@ class Exercise0002Test(
         }
     }
 
-    @Disabled("fix RestTemplate configuration")
     @TestFactory
     fun `test whether connection request timeout is configured`() = implementations.map { impl ->
         dynamicTest("${impl::class.simpleName} - connection request timeout fires when pool is exhausted") {
-            val poolSize = 5
+            val poolSize = 10 // must match maxTotal / defaultMaxPerRoute in RestTemplateCustomizer
             runBlocking {
                 val holdingJobs = (1..poolSize).map {
                     launch(Dispatchers.IO) { impl.translate("delay", "es") }
@@ -83,7 +79,6 @@ class Exercise0002Test(
         }
     }
 
-    @Disabled("fix RestTemplate configuration")
     @TestFactory
     fun `test whether connection pool is exhausted`() = implementations.map { impl ->
         dynamicTest("${impl::class.simpleName} - 6th request blocks until a pool connection is released") {
