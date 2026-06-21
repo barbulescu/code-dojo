@@ -30,6 +30,7 @@ class Exercise0002Test(
             dynamicTest("${impl::class.simpleName} - slow downstream reveals missing timeout") {
                 assertThatThrownBy { impl.translate("world", "es") }
                     .isInstanceOf(ResourceAccessException::class.java)
+                    .hasMessageContaining("Request cancelled")
             },
         )
     }
@@ -52,7 +53,7 @@ class Exercise0002Rule : (LoggedRequest) -> ResponseDefinition? {
             text == "world" && language == "es" -> responseDefinition()
                 .withHeader("Content-Type", "application/json")
                 .withBody("""{"translatedText":"mundo"}""")
-                .withFixedDelay(1000)
+                .withFixedDelay(30_000)
                 .build()
             else -> null
         }
