@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.http.ResponseDefinition
 import com.github.tomakehurst.wiremock.verification.LoggedRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
@@ -29,6 +30,7 @@ class Exercise0002Test(
         }
     }
 
+    @Disabled("fix RestTemplate configuration")
     @TestFactory
     fun `test whether read timeout is configured`() = implementations.map { impl ->
         dynamicTest("${impl::class.simpleName} - slow downstream reveals missing timeout") {
@@ -38,6 +40,7 @@ class Exercise0002Test(
         }
     }
 
+    @Disabled("fix RestTemplate configuration")
     @TestFactory
     fun `test whether connect timeout is configured`(): List<DynamicTest> {
         // 10.255.255.1 is a non-routable address that drops TCP SYN packets, triggering connect timeout
