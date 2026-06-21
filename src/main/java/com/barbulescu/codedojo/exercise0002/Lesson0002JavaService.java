@@ -12,18 +12,18 @@ import java.util.Map;
 public class Lesson0002JavaService implements Lesson0002Service {
 
     private final RestTemplate restTemplate;
-    private final TranslationProperties properties;
 
-    public Lesson0002JavaService(TranslationProperties properties, RestTemplateBuilder restTemplateBuilder) {
-        this.properties = properties;
-        this.restTemplate = restTemplateBuilder.build();
+    public Lesson0002JavaService(TranslationProperties properties) {
+        this.restTemplate = new RestTemplateBuilder()
+                .baseUri(properties.getBaseURL())
+                .build();
     }
 
     @Override
     public @NonNull String translate(@NonNull String text, @NonNull String targetLanguage) {
-        String url = properties.getBaseURL() + "/lesson0002/translate?text={text}&lang={lang}";
+        String path = "/lesson0002/translate?text={text}&lang={lang}";
         TranslationResponse response = restTemplate.getForObject(
-                url,
+                path,
                 TranslationResponse.class,
                 Map.of("text", text, "lang", targetLanguage)
         );
