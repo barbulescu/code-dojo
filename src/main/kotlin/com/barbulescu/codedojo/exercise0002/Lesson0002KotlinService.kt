@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.getForObject
 
 @Service
-class Lesson0002KotlinService(properties: TranslationProperties) : Lesson0002Service {
+class Lesson0002KotlinService(
+    properties: TranslationProperties,
+    restTemplateBuilder: RestTemplateBuilder,
+) : Lesson0002Service {
 
-    private val restTemplate = RestTemplateBuilder()
+    private val restTemplate = restTemplateBuilder
         .baseUri(properties.baseURL)
         .build()
 
