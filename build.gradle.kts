@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
+    id("org.springframework.boot") version "4.1.0"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "com.barbulescu.codedojo"
@@ -15,19 +17,13 @@ kotlin {
 }
 
 dependencies {
-    implementation(platform(libs.spring.boot.bom))
-    implementation(libs.jspecify)
-    implementation(libs.kotlin.reflect)
-    implementation(libs.spring.boot.starter)
-    implementation(libs.spring.boot.starter.web)
-    implementation(libs.spring.boot.starter.webflux)
-    testImplementation(platform(libs.junit.bom))
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.assertj)
-    testImplementation(libs.spring.boot.starter.test)
-    testImplementation(libs.spring.boot.resttestclient)
+    implementation("org.springframework.boot:spring-boot-starter-restclient")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("tools.jackson.module:jackson-module-kotlin")
+    testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(libs.wiremock)
-    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.withType<JavaCompile> {
