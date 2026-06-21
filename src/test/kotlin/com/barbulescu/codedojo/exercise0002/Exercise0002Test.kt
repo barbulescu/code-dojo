@@ -83,6 +83,26 @@ class Exercise0002Test(
         }
     }
 
+    @Disabled("fix RestTemplate configuration")
+    @TestFactory
+    fun `test whether connection pool is exhausted`() = implementations.map { impl ->
+        dynamicTest("${impl::class.simpleName} - 6th request blocks until a pool connection is released") {
+            runBlocking {
+                val holdingJobs = (1..6).map {
+                    launch(Dispatchers.IO) { impl.translate("delay", "es") }
+                }
+                delay(100.milliseconds)
+
+                val start = System.currentTimeMillis()
+                launch(Dispatchers.IO) { impl.translate("hello", "es") }
+                    .join()
+
+                assertThat(System.currentTimeMillis() - start).isLessThan(1_000)
+
+                holdingJobs.joinAll()
+            }
+        }
+    }
 }
 
 @Component
