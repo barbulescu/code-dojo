@@ -18,10 +18,12 @@ kotlin {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-restclient")
+    implementation("org.apache.httpcomponents.client5:httpclient5")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("tools.jackson.module:jackson-module-kotlin")
     testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(libs.wiremock)
 }
