@@ -46,3 +46,33 @@ The goal is to fix the configuration so the services are resilient and productio
 - *Why is it recommended to inject the `RestTemplateBuilder` bean provided by Spring rather than constructing one with `new RestTemplateBuilder()`?*
 
 - *Why is it important to configure timeouts on a `RestTemplate`?*
+
+### Exercise 0003
+
+Java 8 to Java 21 migration exercise: a small order workflow with commands, results, value objects, money calculations, fulfillment states, and a deliberately missed command branch.
+
+The starting implementation is Java-only and intentionally written in a Java 8 style: mutable POJOs, getters/setters, `instanceof` dispatch, defensive collection copies, and verbose validation. Some tests pass immediately, while the migration and bug-revealing tests fail on purpose so you can see them turn green as the refactor progresses.
+
+**Tasks**
+
+1. **Fix the missing command handling bug** - `ReturnOrder` exists, but the dispatcher does not handle it. Returning a shipped order should produce an accepted result with a `Returned` fulfillment state.
+
+2. **Convert value objects and payload types to records** - migrate `Order`, `Money`, `Product`, `OrderLine`, `AppliedDiscount`, command payloads, result payloads, and data-carrying fulfillment states to records. Keep constructor validation with compact constructors.
+
+3. **Introduce sealed hierarchies** - migrate `OrderCommand`, `OrderResult`, and `FulfillmentState` to sealed types with explicit permitted variants.
+
+4. **Replace `instanceof` dispatch with pattern matching** - rewrite `ExerciseJava0003.handle(...)` around an exhaustive pattern-matching `switch` over `OrderCommand`. Do not keep a catch-all default branch once the sealed hierarchy is exhaustive.
+
+5. **Use record patterns where they clarify the code** - use nested record patterns in one focused place, such as line validation or total calculation. Avoid turning every method into a syntax demo.
+
+6. **Modernize collection code** - replace Java 8-era collection boilerplate with Java 21-friendly APIs where they improve the code, such as `List.copyOf`, `List.of`, `Stream.toList`, and immutable update helpers.
+
+7. **Keep workflow rules explicit** - creation starts orders in `Confirmed`; adding items, discounts, shipping, and cancellation are allowed only from `Confirmed`; returns are allowed only from `Shipped`.
+
+**Hints**
+
+- `Confirmed` has no payload, so it may remain a no-payload class/record or become an enum singleton. `Shipped`, `Cancelled`, and `Returned` carry data and should become records.
+- `Rejected(String reason)` is intentionally simple. Do not add a sealed rejection reason hierarchy for this exercise.
+- `AppliedDiscount` is nullable in the starter as a deliberate simplification. You may keep that model or introduce a cleaner absence model if the tests stay clear and the domain remains compact.
+- Prefer structural invariants in record compact constructors and workflow rules in `ExerciseJava0003`.
+- The failing structural tests are part of the exercise spec; do not disable them.
