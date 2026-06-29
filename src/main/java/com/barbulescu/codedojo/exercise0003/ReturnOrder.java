@@ -1,29 +1,9 @@
 package com.barbulescu.codedojo.exercise0003;
 
-public class ReturnOrder implements OrderCommand {
-
-    private String reason;
-
-    public ReturnOrder(String reason) {
-        setReason(reason);
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public String reason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        if (isBlank(reason)) {
+public record ReturnOrder(String reason) implements OrderCommand {
+    public ReturnOrder {
+        if (reason == null || reason.trim().isEmpty()) {
             throw new IllegalArgumentException("reason must not be blank");
         }
-        this.reason = reason;
-    }
-
-    private static boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
     }
 }

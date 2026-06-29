@@ -1,71 +1,22 @@
 package com.barbulescu.codedojo.exercise0003;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class Order {
-
-    private String orderId;
-    private String customerId;
-    private List<OrderLine> lines;
-    private AppliedDiscount discount;
-    private FulfillmentState state;
-
-    public Order(
-            String orderId,
-            String customerId,
-            List<OrderLine> lines,
-            AppliedDiscount discount,
-            FulfillmentState state
-    ) {
-        setOrderId(orderId);
-        setCustomerId(customerId);
-        setLines(lines);
-        setDiscount(discount);
-        setState(state);
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public String orderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
+public record Order(
+        String orderId,
+        String customerId,
+        List<OrderLine> lines,
+        AppliedDiscount discount,
+        FulfillmentState state
+) {
+    public Order {
         if (isBlank(orderId)) {
             throw new IllegalArgumentException("orderId must not be blank");
         }
-        this.orderId = orderId;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public String customerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
         if (isBlank(customerId)) {
             throw new IllegalArgumentException("customerId must not be blank");
         }
-        this.customerId = customerId;
-    }
-
-    public List<OrderLine> getLines() {
-        return Collections.unmodifiableList(lines);
-    }
-
-    public List<OrderLine> lines() {
-        return getLines();
-    }
-
-    public void setLines(List<OrderLine> lines) {
         if (lines == null) {
             throw new IllegalArgumentException("lines must not be null");
         }
@@ -74,34 +25,10 @@ public class Order {
                 throw new IllegalArgumentException("lines must not contain null elements");
             }
         }
-        this.lines = new ArrayList<>(lines);
-    }
-
-    public AppliedDiscount getDiscount() {
-        return discount;
-    }
-
-    public AppliedDiscount discount() {
-        return discount;
-    }
-
-    public void setDiscount(AppliedDiscount discount) {
-        this.discount = discount;
-    }
-
-    public FulfillmentState getState() {
-        return state;
-    }
-
-    public FulfillmentState state() {
-        return state;
-    }
-
-    public void setState(FulfillmentState state) {
         if (state == null) {
             throw new IllegalArgumentException("state must not be null");
         }
-        this.state = state;
+        lines = List.copyOf(lines);
     }
 
     public Money total() {
@@ -109,19 +36,22 @@ public class Order {
             return new Money(BigDecimal.ZERO, "USD");
         }
 
-        Money total = new Money(BigDecimal.ZERO, lines.get(0).getUnitPrice().getCurrency());
-        for (OrderLine line : lines) {
-            total = total.plus(line.lineTotal());
-        }
+        Money zero = new Money(BigDecimal.ZERO, lines.get(0).unitPrice().currency());
+        Money subtotal = lines.stream()
+                .map(line -> switch (line) {
+                    case OrderLine(var product, var qty, Money(var amount, var currency)) ->
+                            new Money(amount.multiply(BigDecimal.valueOf(qty)), currency);
+                })
+                .reduce(zero, Money::plus);
 
         if (discount == null) {
-            return total;
+            return subtotal;
         }
 
         BigDecimal multiplier = BigDecimal.ONE.subtract(
-                discount.getPercent().divide(BigDecimal.valueOf(100))
+                discount.percent().divide(BigDecimal.valueOf(100))
         );
-        return new Money(total.getAmount().multiply(multiplier), total.getCurrency());
+        return new Money(subtotal.amount().multiply(multiplier), subtotal.currency());
     }
 
     private static boolean isBlank(String value) {
