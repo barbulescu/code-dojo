@@ -36,7 +36,7 @@ public record Order(
             return new Money(BigDecimal.ZERO, "USD");
         }
 
-        Money zero = new Money(BigDecimal.ZERO, lines.get(0).unitPrice().currency());
+        Money zero = new Money(BigDecimal.ZERO, lines.getFirst().unitPrice().currency());
         Money subtotal = lines.stream()
                 .map(line -> switch (line) {
                     case OrderLine(var product, var qty, Money(var amount, var currency)) ->

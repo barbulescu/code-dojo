@@ -1,6 +1,7 @@
 package com.barbulescu.codedojo.exercise0003;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExerciseJava0003 implements OrderWorkflow {
 
@@ -41,8 +42,7 @@ public class ExerciseJava0003 implements OrderWorkflow {
         if (!(order.state() instanceof Confirmed)) {
             return new Rejected("Only confirmed orders can be changed");
         }
-        var newLines = new ArrayList<>(order.lines());
-        newLines.add(new OrderLine(
+        var newLines = List.of(new OrderLine(
                 new Product(command.productId(), command.productName()),
                 command.quantity(),
                 command.unitPrice()
