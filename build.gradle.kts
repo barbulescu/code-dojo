@@ -32,6 +32,10 @@ tasks.withType<JavaCompile> {
     options.compilerArgs.add("-parameters")
 }
 
+tasks.named("bootJar") {
+    enabled = false
+}
+
 tasks.test {
     useJUnitPlatform()
 }
