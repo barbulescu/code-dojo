@@ -5,7 +5,7 @@ import java.math.BigDecimal
 data class Money(val amount: BigDecimal, val currency: NonBlankString) {
 
     init {
-        require(amount > BigDecimal.ZERO) { "Amount must be positive" }
+        require(amount >= BigDecimal.ZERO) { "Amount must not be negative" }
     }
 
     operator fun plus(other: Money): Money {

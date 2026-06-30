@@ -7,7 +7,7 @@ class ExerciseKotlin0003 {
             command.customerId,
             command.lines,
             null,
-            Confirmed()
+            Confirmed
         )
     )
 
@@ -44,9 +44,6 @@ class ExerciseKotlin0003 {
     private fun ship(order: Order, command: ShipOrder): OrderResult {
         if (order.state !is Confirmed) {
             return "Only confirmed orders can be shipped".asRejected()
-        }
-        if (order.lines.isEmpty()) {
-            return "Orders without lines cannot be shipped".asRejected()
         }
         return Accepted(order.copy(state = Shipped(command.trackingNumber)))
     }

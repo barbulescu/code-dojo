@@ -2,7 +2,7 @@ package com.barbulescu.codedojo.exercise0003.kotlin
 
 sealed interface FulfillmentState
 
-class Confirmed : FulfillmentState
+data object Confirmed : FulfillmentState
 
 data class Cancelled(val reason: NonBlankString) : FulfillmentState
 

@@ -42,7 +42,8 @@ public class ExerciseJava0003 implements OrderWorkflow {
         if (!(order.state() instanceof Confirmed)) {
             return new Rejected("Only confirmed orders can be changed");
         }
-        var newLines = List.of(new OrderLine(
+        var newLines = new ArrayList<>(order.lines());
+        newLines.add(new OrderLine(
                 new Product(command.productId(), command.productName()),
                 command.quantity(),
                 command.unitPrice()

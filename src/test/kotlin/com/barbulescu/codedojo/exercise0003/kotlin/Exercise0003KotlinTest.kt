@@ -7,7 +7,7 @@ import java.math.BigDecimal
 
 class Exercise0003KotlinTest {
 
-    private val workflow: ExerciseKotlin0003 = ExerciseKotlin0003()
+    private val workflow = ExerciseKotlin0003()
 
     @Test
     fun `create order starts in confirmed state`() {

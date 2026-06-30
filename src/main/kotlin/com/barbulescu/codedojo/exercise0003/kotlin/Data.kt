@@ -14,7 +14,7 @@ value class NonBlankString(val value: String) {
 @JvmInline
 value class Percent(val value: BigDecimal) {
     init {
-        require(value > ZERO && value < 100.toBigDecimal()) { "percent must be greater than 0 and at most 100" }
+        require(value > ZERO && value <= BigDecimal.valueOf(100)) { "percent must be greater than 0 and at most 100" }
     }
 
     fun toMultiplier(): BigDecimal = BigDecimal.ONE - value.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_EVEN)

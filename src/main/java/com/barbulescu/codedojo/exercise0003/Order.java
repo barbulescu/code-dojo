@@ -1,6 +1,7 @@
 package com.barbulescu.codedojo.exercise0003;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public record Order(
@@ -32,16 +33,9 @@ public record Order(
     }
 
     public Money total() {
-        if (lines.isEmpty()) {
-            return new Money(BigDecimal.ZERO, "USD");
-        }
-
         Money zero = new Money(BigDecimal.ZERO, lines.getFirst().unitPrice().currency());
         Money subtotal = lines.stream()
-                .map(line -> switch (line) {
-                    case OrderLine(var product, var qty, Money(var amount, var currency)) ->
-                            new Money(amount.multiply(BigDecimal.valueOf(qty)), currency);
-                })
+                .map(OrderLine::lineTotal)
                 .reduce(zero, Money::plus);
 
         if (discount == null) {
@@ -49,7 +43,7 @@ public record Order(
         }
 
         BigDecimal multiplier = BigDecimal.ONE.subtract(
-                discount.percent().divide(BigDecimal.valueOf(100))
+                discount.percent().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_EVEN)
         );
         return new Money(subtotal.amount().multiply(multiplier), subtotal.currency());
     }

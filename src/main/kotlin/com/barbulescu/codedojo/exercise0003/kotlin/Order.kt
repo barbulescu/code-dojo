@@ -11,19 +11,13 @@ data class Order(
     val discount: AppliedDiscount?,
     val state: FulfillmentState
 ) {
-    val currency: NonBlankString
-
     init {
-        val currencies = lines.map { it.unitPrice.currency }.distinct()
-        require(currencies.size == 1) { "Order must have single currency" }
-        currency = currencies.first()
+        require(lines.map { it.unitPrice.currency }.distinct().size == 1) { "Order must have single currency" }
     }
 
-    fun total(): Money {
-        if (lines.isEmpty()) {
-            return Money(BigDecimal.ZERO, "USD".nonBlankString())
-        }
+    val currency: NonBlankString get() = lines.first().unitPrice.currency
 
+    fun total(): Money {
         val subtotal = lines
             .map { it.lineTotal }
             .sumOf { it.amount }
