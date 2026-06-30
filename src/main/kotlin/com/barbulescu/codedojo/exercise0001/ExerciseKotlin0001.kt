@@ -15,9 +15,9 @@ class ExerciseKotlin0001 : Exercise0001 {
     override fun extractWords(sentences: List<String?>): List<String> = sentences
         .asSequence()
         .filterNotNull()
-        .filter { it.startsWith("#") }
-        .filter { it.length < 5  }
+        .filterNot { it.startsWith("#") }
+        .filter { it.length >= 5  }
         .flatMap { it.split(" ") }
-        .filter { it.length>2 }
+        .filter { it.length > 2 }
         .toList()
 }
