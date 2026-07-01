@@ -13,8 +13,8 @@ public class Lesson0002JavaService implements Lesson0002Service {
 
     private final RestTemplate restTemplate;
 
-    public Lesson0002JavaService(TranslationProperties properties) {
-        this.restTemplate = new RestTemplateBuilder()
+    public Lesson0002JavaService(TranslationProperties properties, RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder
                 .baseUri(properties.getBaseURL())
                 .build();
     }
