@@ -1,7 +1,6 @@
 package com.barbulescu.codedojo.exercise0003;
 
 public record AddItem(String productId, String productName, int quantity, Money unitPrice) implements OrderCommand {
-
     public AddItem {
         if (isBlank(productId)) {
             throw new IllegalArgumentException("productId must not be blank");

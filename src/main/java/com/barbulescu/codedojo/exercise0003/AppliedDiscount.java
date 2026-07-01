@@ -3,7 +3,6 @@ package com.barbulescu.codedojo.exercise0003;
 import java.math.BigDecimal;
 
 public record AppliedDiscount(String code, BigDecimal percent) {
-
     public AppliedDiscount {
         validate(code, percent);
     }

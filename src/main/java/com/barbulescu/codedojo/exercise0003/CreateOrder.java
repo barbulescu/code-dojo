@@ -3,7 +3,6 @@ package com.barbulescu.codedojo.exercise0003;
 import java.util.List;
 
 public record CreateOrder(String orderId, String customerId, List<OrderLine> lines) implements OrderCommand {
-
     public CreateOrder {
         if (isBlank(orderId)) {
             throw new IllegalArgumentException("orderId must not be blank");

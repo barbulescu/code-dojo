@@ -1,7 +1,6 @@
 package com.barbulescu.codedojo.exercise0003;
 
 public record Product(String id, String name) {
-
     public Product {
         if (isBlank(id)) {
             throw new IllegalArgumentException("id must not be blank");

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
 class Exercise0003KotlinTest {
-
     private val workflow = ExerciseKotlin0003()
 
     @Test

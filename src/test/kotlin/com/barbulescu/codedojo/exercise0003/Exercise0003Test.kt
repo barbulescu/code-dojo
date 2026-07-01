@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
 class Exercise0003Test {
-
     private val workflow: OrderWorkflow = ExerciseJava0003()
 
     @Test

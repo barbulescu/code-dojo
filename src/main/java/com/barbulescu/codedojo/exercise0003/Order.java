@@ -1,6 +1,7 @@
 package com.barbulescu.codedojo.exercise0003;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public record Order(
@@ -10,7 +11,6 @@ public record Order(
         AppliedDiscount discount,
         FulfillmentState state
 ) {
-
     public Order {
         if (isBlank(orderId)) {
             throw new IllegalArgumentException("orderId must not be blank");

@@ -3,7 +3,6 @@ package com.barbulescu.codedojo.exercise0003;
 import java.math.BigDecimal;
 
 public record Money(BigDecimal amount, String currency) {
-
     public Money {
         if (amount == null) {
             throw new IllegalArgumentException("amount must not be null");
@@ -19,11 +18,6 @@ public record Money(BigDecimal amount, String currency) {
     public Money plus(Money other) {
         ensureSameCurrency(other);
         return new Money(amount.add(other.amount), currency);
-    }
-
-    public Money minus(Money other) {
-        ensureSameCurrency(other);
-        return new Money(amount.subtract(other.amount), currency);
     }
 
     public Money multiply(int multiplier) {

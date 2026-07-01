@@ -3,7 +3,6 @@ package com.barbulescu.codedojo.exercise0003;
 import java.util.stream.Stream;
 
 public class ExerciseJava0003 implements OrderWorkflow {
-
     @Override
     public OrderResult create(CreateOrder command) {
         if (command == null) {
