@@ -1,25 +1,10 @@
 package com.barbulescu.codedojo.exercise0003;
 
-public class Shipped implements FulfillmentState {
+public record Shipped(String trackingNumber) implements FulfillmentState {
 
-    private String trackingNumber;
-
-    public Shipped(String trackingNumber) {
-        setTrackingNumber(trackingNumber);
-    }
-
-    public String getTrackingNumber() {
-        return trackingNumber;
-    }
-
-    public String trackingNumber() {
-        return trackingNumber;
-    }
-
-    public void setTrackingNumber(String trackingNumber) {
-        if (trackingNumber == null || trackingNumber.trim().isEmpty()) {
+    public Shipped {
+        if (trackingNumber == null || trackingNumber.isBlank()) {
             throw new IllegalArgumentException("trackingNumber must not be blank");
         }
-        this.trackingNumber = trackingNumber;
     }
 }

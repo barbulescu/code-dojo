@@ -1,29 +1,14 @@
 package com.barbulescu.codedojo.exercise0003;
 
-public class CancelOrder implements OrderCommand {
+public record CancelOrder(String reason) implements OrderCommand {
 
-    private String reason;
-
-    public CancelOrder(String reason) {
-        setReason(reason);
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public String reason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
+    public CancelOrder {
         if (isBlank(reason)) {
             throw new IllegalArgumentException("reason must not be blank");
         }
-        this.reason = reason;
     }
 
     private static boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
+        return value == null || value.isBlank();
     }
 }

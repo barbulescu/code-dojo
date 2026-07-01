@@ -2,47 +2,18 @@ package com.barbulescu.codedojo.exercise0003;
 
 import java.math.BigDecimal;
 
-public class Money {
+public record Money(BigDecimal amount, String currency) {
 
-    private BigDecimal amount;
-    private String currency;
-
-    public Money(BigDecimal amount, String currency) {
-        setAmount(amount);
-        setCurrency(currency);
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public BigDecimal amount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
+    public Money {
         if (amount == null) {
             throw new IllegalArgumentException("amount must not be null");
         }
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("amount must not be negative");
         }
-        this.amount = amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public String currency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        if (currency == null || currency.trim().isEmpty()) {
+        if (currency == null || currency.isBlank()) {
             throw new IllegalArgumentException("currency must not be blank");
         }
-        this.currency = currency;
     }
 
     public Money plus(Money other) {
