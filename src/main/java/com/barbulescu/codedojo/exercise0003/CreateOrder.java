@@ -16,15 +16,10 @@ public record CreateOrder(String orderId, String customerId, List<OrderLine> lin
         if (lines.isEmpty()) {
             throw new IllegalArgumentException("lines must not be empty");
         }
-        for (OrderLine line : lines) {
-            if (line == null) {
-                throw new IllegalArgumentException("lines must not contain null elements");
-            }
-        }
         lines = List.copyOf(lines);
     }
 
     private static boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
+        return value == null || value.isBlank();
     }
 }

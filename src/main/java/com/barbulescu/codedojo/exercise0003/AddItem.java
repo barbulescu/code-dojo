@@ -17,6 +17,6 @@ public record AddItem(String productId, String productName, int quantity, Money 
     }
 
     private static boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
+        return value == null || value.isBlank();
     }
 }

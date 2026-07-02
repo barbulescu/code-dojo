@@ -11,6 +11,6 @@ public record Product(String id, String name) {
     }
 
     private static boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
+        return value == null || value.isBlank();
     }
 }

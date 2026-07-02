@@ -10,19 +10,14 @@ public record Money(BigDecimal amount, String currency) {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("amount must not be negative");
         }
-        if (currency == null || currency.trim().isEmpty()) {
+        if (currency == null || currency.isBlank()) {
             throw new IllegalArgumentException("currency must not be blank");
         }
     }
 
     public Money plus(Money other) {
         ensureSameCurrency(other);
-        return new Money(amount.add(other.amount()), currency);
-    }
-
-    public Money minus(Money other) {
-        ensureSameCurrency(other);
-        return new Money(amount.subtract(other.amount()), currency);
+        return new Money(amount.add(other.amount), currency);
     }
 
     public Money multiply(int multiplier) {
@@ -36,8 +31,8 @@ public record Money(BigDecimal amount, String currency) {
         if (other == null) {
             throw new IllegalArgumentException("other must not be null");
         }
-        if (!currency.equals(other.currency())) {
-            throw new IllegalArgumentException("Cannot combine " + currency + " with " + other.currency());
+        if (!currency.equals(other.currency)) {
+            throw new IllegalArgumentException("Cannot combine " + currency + " with " + other.currency);
         }
     }
 }

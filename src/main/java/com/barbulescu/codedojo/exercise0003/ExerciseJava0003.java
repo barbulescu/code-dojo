@@ -1,22 +1,22 @@
 package com.barbulescu.codedojo.exercise0003;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Stream;
 
 public class ExerciseJava0003 implements OrderWorkflow {
-
     @Override
     public OrderResult create(CreateOrder command) {
         if (command == null) {
             throw new IllegalArgumentException("command must not be null");
         }
-        return new Accepted(new Order(
+
+        Order order = new Order(
                 command.orderId(),
                 command.customerId(),
                 command.lines(),
                 null,
                 new Confirmed()
-        ));
+        );
+        return new Accepted(order);
     }
 
     @Override
@@ -29,69 +29,60 @@ public class ExerciseJava0003 implements OrderWorkflow {
         }
 
         return switch (command) {
-            case AddItem addItem -> addItem(order, addItem);
-            case ApplyDiscount applyDiscount -> applyDiscount(order, applyDiscount);
-            case ShipOrder shipOrder -> ship(order, shipOrder);
-            case CancelOrder cancelOrder -> cancel(order, cancelOrder);
-            case ReturnOrder returnOrder -> returnOrder(order, returnOrder);
-            case CreateOrder createOrder -> new Rejected("CreateOrder is not a state transition command");
+            case CreateOrder ignored -> new Rejected("CreateOrder must be passed to create");
+            case AddItem(String productId, String productName, int quantity, Money unitPrice) ->
+                    addItem(order, productId, productName, quantity, unitPrice);
+            case ApplyDiscount(String code, var percent) -> applyDiscount(order, code, percent);
+            case ShipOrder(String trackingNumber) -> ship(order, trackingNumber);
+            case CancelOrder(String reason) -> cancel(order, reason);
+            case ReturnOrder(String reason) -> returnOrder(order, reason);
         };
     }
 
-    private OrderResult addItem(Order order, AddItem command) {
+    private OrderResult addItem(Order order, String productId, String productName, int quantity, Money unitPrice) {
         if (!(order.state() instanceof Confirmed)) {
             return new Rejected("Only confirmed orders can be changed");
         }
-        var newLines = new ArrayList<>(order.lines());
-        newLines.add(new OrderLine(
-                new Product(command.productId(), command.productName()),
-                command.quantity(),
-                command.unitPrice()
+
+        OrderLine newLine = new OrderLine(new Product(productId, productName), quantity, unitPrice);
+        return new Accepted(order.withLines(
+                Stream.concat(order.lines().stream(), Stream.of(newLine)).toList()
         ));
-        return new Accepted(new Order(order.orderId(), order.customerId(), newLines, order.discount(), order.state()));
     }
 
-    private OrderResult applyDiscount(Order order, ApplyDiscount command) {
+    private OrderResult applyDiscount(Order order, String code, java.math.BigDecimal percent) {
         if (!(order.state() instanceof Confirmed)) {
             return new Rejected("Only confirmed orders can receive discounts");
         }
-        return new Accepted(new Order(
-                order.orderId(), order.customerId(), order.lines(),
-                new AppliedDiscount(command.code(), command.percent()),
-                order.state()
-        ));
+
+        return new Accepted(order.withDiscount(new AppliedDiscount(code, percent)));
     }
 
-    private OrderResult ship(Order order, ShipOrder command) {
+    private OrderResult ship(Order order, String trackingNumber) {
         if (!(order.state() instanceof Confirmed)) {
             return new Rejected("Only confirmed orders can be shipped");
         }
         if (order.lines().isEmpty()) {
             return new Rejected("Orders without lines cannot be shipped");
         }
-        return new Accepted(new Order(
-                order.orderId(), order.customerId(), order.lines(),
-                order.discount(), new Shipped(command.trackingNumber())
-        ));
+
+        return new Accepted(order.withState(new Shipped(trackingNumber)));
     }
 
-    private OrderResult cancel(Order order, CancelOrder command) {
+    private OrderResult cancel(Order order, String reason) {
         if (!(order.state() instanceof Confirmed)) {
             return new Rejected("Only confirmed orders can be cancelled");
         }
-        return new Accepted(new Order(
-                order.orderId(), order.customerId(), order.lines(),
-                order.discount(), new Cancelled(command.reason())
-        ));
+
+        return new Accepted(order.withState(new Cancelled(reason)));
     }
 
-    private OrderResult returnOrder(Order order, ReturnOrder command) {
-        if (!(order.state() instanceof Shipped)) {
-            return new Rejected("Only shipped orders can be returned");
-        }
-        return new Accepted(new Order(
-                order.orderId(), order.customerId(), order.lines(),
-                order.discount(), new Returned(command.reason())
-        ));
+    private OrderResult returnOrder(Order order, String reason) {
+        return switch (order.state()) {
+            case Shipped(String ignored) -> new Accepted(order.withState(new Returned(reason)));
+            case Confirmed ignored -> new Rejected("Only shipped orders can be returned");
+            case Cancelled ignored -> new Rejected("Only shipped orders can be returned");
+            case Returned ignored -> new Rejected("Only shipped orders can be returned");
+        };
     }
 }

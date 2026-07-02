@@ -21,34 +21,44 @@ public record Order(
         if (lines == null) {
             throw new IllegalArgumentException("lines must not be null");
         }
-        for (OrderLine line : lines) {
-            if (line == null) {
-                throw new IllegalArgumentException("lines must not contain null elements");
-            }
-        }
+        lines = List.copyOf(lines);
         if (state == null) {
             throw new IllegalArgumentException("state must not be null");
         }
-        lines = List.copyOf(lines);
+    }
+
+    public Order withLines(List<OrderLine> lines) {
+        return new Order(orderId, customerId, lines, discount, state);
+    }
+
+    public Order withDiscount(AppliedDiscount discount) {
+        return new Order(orderId, customerId, lines, discount, state);
+    }
+
+    public Order withState(FulfillmentState state) {
+        return new Order(orderId, customerId, lines, discount, state);
     }
 
     public Money total() {
-        Money zero = new Money(BigDecimal.ZERO, lines.getFirst().unitPrice().currency());
-        Money subtotal = lines.stream()
+        if (lines.isEmpty()) {
+            return new Money(BigDecimal.ZERO, "USD");
+        }
+
+        Money total = lines.stream()
                 .map(OrderLine::lineTotal)
-                .reduce(zero, Money::plus);
+                .reduce(new Money(BigDecimal.ZERO, lines.getFirst().unitPrice().currency()), Money::plus);
 
         if (discount == null) {
-            return subtotal;
+            return total;
         }
 
         BigDecimal multiplier = BigDecimal.ONE.subtract(
-                discount.percent().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_EVEN)
+                discount.percent().divide(BigDecimal.valueOf(100))
         );
-        return new Money(subtotal.amount().multiply(multiplier), subtotal.currency());
+        return new Money(total.amount().multiply(multiplier), total.currency());
     }
 
     private static boolean isBlank(String value) {
-        return value == null || value.trim().isEmpty();
+        return value == null || value.isBlank();
     }
 }

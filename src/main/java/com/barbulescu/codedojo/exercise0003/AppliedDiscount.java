@@ -4,7 +4,11 @@ import java.math.BigDecimal;
 
 public record AppliedDiscount(String code, BigDecimal percent) {
     public AppliedDiscount {
-        if (code == null || code.trim().isEmpty()) {
+        validate(code, percent);
+    }
+
+    static void validate(String code, BigDecimal percent) {
+        if (code == null || code.isBlank()) {
             throw new IllegalArgumentException("code must not be blank");
         }
         if (percent == null) {
